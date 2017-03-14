@@ -41,7 +41,7 @@ namespace Microsoft.FamilyShow
         {
             InitializeComponent();
 
-            family.CurrentChanged +=new EventHandler(People_CurrentChanged);
+            family.CurrentChanged += new EventHandler(People_CurrentChanged);
 
             // Build the Open Menu, recent opened files are part of the open menu
             BuildOpenMenu();
@@ -50,6 +50,12 @@ namespace Microsoft.FamilyShow
 
             // The welcome screen is the initial view
             ShowWelcomeScreen();
+
+            var commandargs = Environment.GetCommandLineArgs();
+            if (commandargs.Length > 1)
+            {
+                OpenFamilyFromFile(commandargs[1]);
+            }
         }
 
         #region event handlers
@@ -233,7 +239,7 @@ namespace Microsoft.FamilyShow
         private void NewFamily(object sender, RoutedEventArgs e)
         {
             PromptToSave();
-        
+
             family.Clear();
             familyCollection.FullyQualifiedFilename = null;
             family.OnContentChanged();
@@ -248,7 +254,7 @@ namespace Microsoft.FamilyShow
         private void OpenFamily(object sender, RoutedEventArgs e)
         {
             PromptToSave();
-        
+
             CommonDialog dialog = new CommonDialog();
             dialog.InitialDirectory = People.ApplicationFolderPath;
             dialog.Filter.Add(new FilterEntry(Properties.Resources.FamilyFiles, Properties.Resources.FamilyExtensions));
@@ -258,9 +264,14 @@ namespace Microsoft.FamilyShow
             dialog.Title = Properties.Resources.Open;
             dialog.ShowOpen();
 
-            if (!string.IsNullOrEmpty(dialog.FileName))
+            OpenFamilyFromFile(dialog.FileName);
+        }
+
+        private void OpenFamilyFromFile(string filename)
+        {
+            if (!string.IsNullOrEmpty(filename))
             {
-                LoadFamily(dialog.FileName);
+                LoadFamily(filename);
 
                 ShowDetailsPane();
 
