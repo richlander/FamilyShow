@@ -166,6 +166,9 @@ namespace Microsoft.FamilyShow
             int count = (int)values[0];
             TagCloud tagCloud = values[1] as TagCloud;
 
+            if (tagCloud == null)
+                return 0;
+
             return ((tagCloud.TagMinimumSize + count + tagCloud.TagIncrementSize) < tagCloud.TagMaximumSize) ?
                 (tagCloud.TagMinimumSize + count + tagCloud.TagIncrementSize) : tagCloud.TagMaximumSize;
         }
